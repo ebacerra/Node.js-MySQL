@@ -28,7 +28,9 @@ connection.connect(function (err) {
 function custDisplay() {
     connection.query(`SELECT * FROM products;`, function (err, res) {
         if (err) throw err;
+
         var choice = [];
+
         for (var i = 0; i < res.length; i++) {
             console.log(res[i].item_id + " : " + res[i].product_name);
             choice.push(res[i].item_id)
@@ -39,7 +41,7 @@ function custDisplay() {
         inquirer
             .prompt([
                 {
-                    name: "custID",
+                    name: "itemID",
                     type: "input",
                     message: "What's the ID of the product would you like to buy?",
                     // choices: [choice]
@@ -48,57 +50,62 @@ function custDisplay() {
                 {
                     name: "custUnit",
                     type: "input",
-                    message: "How many units of the product would like to buy?"
+                    message: "How many units of the product would you like to buy?"
                 }
             ])
-
+            // this is not working
             .then(function (answer) {
                 // based on their answer, checking if it's not in-stock
+                var chosenItem;
+                for (var i = 0; i < res.length; i++) {
+                    if (res[i].item_id === parseInt(answer.itemID)) {
+                        chosenItem = res[i];
+                        console.log('chosen item', chosenItem);
+                    }
+                }
+                if (chosenItem.stock_quantity >= parseInt(answer.custUnit)) {
+                    console.log("sufficient quantity"); //we stopped here************ checking^^^
 
-                if (answer.custUnit >= answer.stock_quantity) {
-                    console.log("You're in luck, we still have them in-stock!" + answer) // how to access stock inventory?
+                    var newQuantity = chosenItem.stock_quantity - parseInt(answer.custUnit);
+                    console.log(typeof newQuantity);
+                    connection.query(
+                        "UPDATE products SET ? WHERE ?",
+                        [
+                            {
+                                stock_quantity: newQuantity
+                            },
+                            {
+                                item_id: chosenItem.item_id
+                            }
+                        ],
+                        function (err) {
+                            if (err) throw err;
+                            console.log("Order placed successfully!");
+                            custDisplay();
+                        }
+                    );
+
+
+                } else {
+                    console.log("Insufficient quantity! Please select another product")
                 }
-                else {
-                    console.log("Insufficient quantity!")
-                }
+
             }).catch(function (err) {
                 console.log(err)
             })
-        connection.end()
-
     });
-}
 
 
 
-function userInput() {
+};
 
 
-    inquirer
-        .prompt([
-            {
-                name: "custID",
-                type: "input",
-                message: "What's the ID of the product would you like to buy?",
-                // choices: []
 
-            },
-            {
-                name: "custUnit",
-                type: "input",
-                message: "How many units of the product they would like to buy?"
-            }
-        ])
 
-        .then(function (answer) {
-            // based on their answer, either call the bid or the post functions
-            if (answer.custID.toUpperCase() === "") {
-                // how to access stock inventory?
-            }
-            else {
-                console.log("Insufficient quantity!")
-            }
-        });
-    connection.end();
-
-}
+// 
+// if (answer.custUnit > answer.stock_quantity) {
+//     console.log("You're in luck, we still have them in-stock!" + answer) // how to access stock inventory?
+// }
+// else {
+//     console.log("Insufficient quantity!")
+// }
