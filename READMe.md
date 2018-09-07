@@ -6,6 +6,9 @@ Bamazon Homework
 > ### BamazonCustomer:
 
 ![mySQL image](/Database.png)
+![animated_node](/bamazon.gif)
+
+
 > * displays a table with the inventory
 > * takes a customer's order
 > * computes the cost
