@@ -6,7 +6,7 @@ Bamazon Homework
 > ### BamazonCustomer:
 
 ![mySQL image](/Database.png)
-![animated_node](/bamazon.gif)
+![animated_node](/giphy.gif)
 
 
 > * displays a table with the inventory
