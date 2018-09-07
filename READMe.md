@@ -11,7 +11,6 @@ Bamazon Homework
 
 > * displays a table with the inventory
 > * takes a customer's order
-> * computes the cost
 > * depletes the stock from the store's inventory
 
 
